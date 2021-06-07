@@ -27,7 +27,7 @@ def getSensorData(type):
         data = pd.read_csv(dir + f + '.csv')
 
         #Timestamp 조정 (430ms)
-        sampleRate = 427
+        sampleRate = 430
         data['timestamp'] = data.index * sampleRate
 
         #해당 값만 뽑아와서 x, y,z로 다시 df 만들기
@@ -96,13 +96,13 @@ def timedomain_scaled(data):
 def KMeanCulster(data):
     x = data.drop(columns=['timestamp'])
 
-    model = KMeans(n_clusters=4, algorithm='auto')
+    model = KMeans(n_clusters=4, algorithm='auto')  #n=target number of shake motion
     model.fit(x)
 
     return model
 
 
-def testModel(model, data):
+def evalModel(model, data):
     x = data.drop(columns=['timestamp'])
 
     predict = pd.DataFrame(model.predict(x))
@@ -122,7 +122,7 @@ def main():
     #KNN Clustering
     model = KMeanCulster(FEATURES_TIME_SCALED)
 
-    testModel(model, FEATURES_TIME_SCALED)
+    evalModel(model, FEATURES_TIME_SCALED)
 
     #save model
     pkl_filename = "shake_classification.pkl"
